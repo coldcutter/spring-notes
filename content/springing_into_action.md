@@ -82,3 +82,98 @@ public class BraveKnightTest {
 
 Mock测试框架Mockito创建了一个Quest接口的mock实现，注入到BraveKnight实例中，在调用了embarkOnQuest()方法之后，请求Mockito来验证Quest对象的embark()方法被恰好调用了一次。
 
+现在我们要把Quest实现注入到BraveKnight中去了，下面是一个Quest实现：
+
+```
+package com.springinaction.knights;
+
+import java.io.PrintStream;
+
+public class SlayDragonQuest implements Quest {
+  
+  private PrintStream stream;
+  
+  public SlayDragonQuest(PrintStream stream) {
+    this.stream = stream;
+  }
+  
+  public void embark() {
+    stream.println("Embarking on quest to slay the dragon!");
+  }
+}
+```
+
+在Spring中，这种建立应用组件之间关系的操作叫做wiring（装配），有好多种方法可以实现装配，通常使用XML。下面是一个简单的Spring配置文件knights.xml，把一个BraveKnight，一个SlayDragonQuest和一个PrintStream装配到一起：
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd">
+  
+  <bean id="knight" class="com.springinaction.knights.BraveKnight">
+    <constructor-arg ref="quest" />
+  </bean>
+  
+  <bean id="quest" class="com.springinaction.knights.SlayDragonQuest">
+    <constructor-arg value="#{T(System).out}" />
+  </bean>
+</beans>
+```
+
+BraveKnight和SlayDragonQuest被声明为bean，SlayDragonQuest bean使用Spring表达式语言来传递System.out（一个PrintStream）给它的构造器。
+
+如果你不想使用XML，也可以使用Java配置：
+
+```
+package com.springinaction.knights.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.springinaction.knights.BraveKnight;
+import com.springinaction.knights.Knight;
+import com.springinaction.knights.Quest;
+import com.springinaction.knights.SlayDragonQuest;
+
+@Configuration
+public class KnightConfig {
+
+  @Bean
+  public Knight knight() {
+    return new BraveKnight(quest());
+  }
+  
+  @Bean
+  public Quest quest() {
+    return new SlayDragonQuest(System.out);
+  }
+}
+```
+
+现在你已经定义好bean和它们之间的关系了，你需要加载XML配置文件来启动应用。
+
+在Spring应用中，一个application context（应用上下文）全权负责加载bean定义以及把它们装配起来。Spring提供了几种应用上下文的实现，差别主要在于如何加载配置。
+
+如果是定义在XML文件中的配置，ClassPathXmlApplicationContext会是一个合适的选择，它会从应用类路径下的一个或多个XML文件加载Spring上下文，对于基于Java的配置，Spring提供了AnnotationConfigApplicationContext，下面是KnightMain例子：
+
+```
+package com.springinaction.knights;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class KnightMain {
+
+  public static void main(String[] args) throws Exception {
+    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+        "META-INF/spring/knight.xml");
+    Knight knight = context.getBean(Knight.class);
+    knight.embarkOnQuest();
+    context.close();
+  }
+}
+```
+
+**使用切面**
+
