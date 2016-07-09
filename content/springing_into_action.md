@@ -80,5 +80,5 @@ public class BraveKnightTest {
 }
 ```
 
-Mock测试框架Mockito创建了一个Quest接口的mock实现，注入到BraveKnight实例中，在调用了embarkOnQuest()方法之后，请求Mockito来验证embark()方法被恰好调用了一次。
+Mock测试框架Mockito创建了一个Quest接口的mock实现，注入到BraveKnight实例中，在调用了embarkOnQuest()方法之后，请求Mockito来验证Quest对象的embark()方法被恰好调用了一次。
 
