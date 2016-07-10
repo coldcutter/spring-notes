@@ -177,3 +177,159 @@ public class KnightMain {
 
 **使用切面**
 
+AOP（Aspect Oriented Programming）即面向切面编程。一个应用通常有很多业务模块，这些业务模块有自己的核心功能，也有像日志、权限和事务管理这种跨多模块的公用服务，把这些公用服务从业务模块中剥离出来，形成切面，可以使业务模块专注自己的业务逻辑，这些切面也可以声明式地应用到业务模块上，如图所示：
+
+![AOP](QQ20160710-1.png)
+
+假设有下面一个Minstrel类（吟游诗人）：
+
+```
+package com.springinaction.knights;
+
+import java.io.PrintStream;
+
+public class Minstrel {
+
+  private PrintStream stream;
+  
+  public Minstrel(PrintStream stream) {
+    this.stream = stream;
+  }
+  
+  public void singBeforeQuest() {
+    stream.println("Fa la la, the knight is so brave!");
+  }
+  
+  public void singAfterQuest() {
+    stream.println("Tee hee hee, the brave knight " +
+        "did embark on a quest!");
+  }
+}
+```
+
+有两个方法，分别会在quest之前和之后调用：
+
+```
+package com.springinaction.knights;
+
+public class BraveKnight implements Knight {
+
+  private Quest quest;
+  private Minstrel minstrel;
+  
+  public BraveKnight(Quest quest, Minstrel minstrel) {
+    this.quest = quest;
+    this.minstrel = minstrel;
+  }
+
+  public void embarkOnQuest() throws QuestException {
+    minstrel.singBeforeQuest();
+    quest.embark();
+    minstrel.singAfterQuest();
+  }
+}
+```
+
+但是，knight真的需要管理minstrel吗，knight和minstrel只要自己管好自己就可以了，就好像观众会在演员开始表演之前和表演结束后鼓掌，演员只管自己演出，用不着操心观众，所以，需要把Minstrel变成一个切面，在Spring配置文件中声明一下：
+
+```
+<?xml version="1.0" encoding="UTF-8"?>>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/aop
+      http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+      http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd">
+  
+  <bean id="knight" class="com.springinaction.knights.BraveKnight">
+    <constructor-arg ref="quest" />
+  </bean>
+  
+  <bean id="quest" class="com.springinaction.knights.SlayDragonQuest">
+    <constructor-arg value="#{T(System).out}" />
+  </bean>
+  
+  <bean id="minstrel" class="com.springinaction.knights.Minstrel">
+    <constructor-arg value="#{T(System).out}" />
+  </bean>
+  
+  <aop:config>
+    <aop:aspect ref="minstrel">
+      <aop:pointcut id="embark" expression="execution(* *.embarkOnQuest(..))"/>
+      <aop:before pointcut-ref="embark" method="singBeforeQuest"/>
+      <aop:after pointcut-ref="embark" method="singAfterQuest"/>
+    </aop:aspect>
+  </aop:config>
+
+</beans>
+```
+
+**消除样板代码**
+
+Java API里充满了各种各样的样板代码，比如使用JDBC：
+
+```
+public Employee getEmployeeById(long id) {
+  Connection conn = null;
+  PreparedStatement stmt = null;
+  ResultSet rs = null;
+  try {
+    conn = dataSource.getConnection();
+    stmt = conn.prepareStatement(
+        "select id, firstname, lastname, salary from " +
+        "employee where id=?");
+    stmt.setLong(1, id);
+    rs = stmt.executeQuery();
+    Employee employee = null;
+    if (rs.next()) {
+      employee = new Employee();
+      employee.setId(rs.getLong("id"));
+      employee.setFirstName(rs.getString("firstname"));
+      employee.setLastName(rs.getString("lastname"));
+      employee.setSalary(rs.getBigDecimal("salary"));
+    }
+    return employee;
+  } catch (SQLException e) {
+  } finally {
+    if (rs != null) {
+      try {
+        rs.close();
+      } catch (SQLException e) {}
+    }
+    if (stmt != null) {
+      try {
+        stmt.close();
+      } catch (SQLException e) {}
+    }
+    if (conn != null) {
+      try {
+        conn.close();
+      } catch (SQLException e) {}
+    }
+  }
+  return null;
+}
+```
+
+就用JDBC查一个员工的信息，真正的代码就几行，大部分都是无聊的样板代码。Spring使用模板来消除样板代码，如JdbcTemplate：
+
+```
+public Employee getEmployeeById(long id) {
+  return jdbcTemplate.queryForObject(
+      "select id, firstname, lastname, salary from employee where id=?",
+      new RowMapper<Employee>() {
+        public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
+          Employee employee = new Employee();
+          employee.setId(rs.getLong("id"));
+          employee.setFirstName(rs.getString("firstname"));
+          employee.setLastName(rs.getString("lastname"));
+          employee.setSalary(rs.getBigDecimal("salary"));
+          return employee;
+        }
+      }, id);
+}
+```
+
+## 1.2 容纳你的beans
+
