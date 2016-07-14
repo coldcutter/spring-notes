@@ -374,6 +374,18 @@ ApplicationContext context = new AnnotationConfigApplicationContext(com.springin
 
 **Spring模块**
 
-![Spring模块](QQ20160714-2.png)
+Spring 4.0包含了20个不同的模块：
 
-Spring
+![Spring模块](QQ20160714-4.png)
+
+可以根据功能分成6类：
+
+![](QQ20160714-3.png)
+
+你不需要把所有模块都引入到项目中，可以随意选择你需要的模块，如果Spring无法满足你的需求，它还提供了其他许多框架和类库的集成点。
+
+**核心Spring容器**
+
+该模块包括Spring **bean工厂**，提供DI功能，构建在bean工厂之上的Spring**应用上下文**实现，除此之外，还包括邮件、JNDI访问、EJB集成和调度等许多企业级服务。其他所有Spring模块都构建于核心容器之上。
+
+****
