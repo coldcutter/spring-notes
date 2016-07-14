@@ -333,3 +333,47 @@ public Employee getEmployeeById(long id) {
 
 ## 1.2 容纳你的beans
 
+在Spring应用中，对象在Spring容器中生存，容器是Spring的核心，Spring提供了几种容器实现，分为两大类：*Bean工厂*（由org.springframework.beans.factory.BeanFactory接口定义）是最简单的容器，提供DI的基本支持，*应用上下文*（由org.springframework.context.ApplicationContext接口定义）建立在Bean工厂的概念之上，提供了应用框架服务，如从属性文件解析文本消息和向事件监听器发布应用事件。由于Bean工厂对于大多数应用来说过于底层了，所以更推荐用应用上下文。
+
+Spring提供了几种应用上下文：
+
+* AnnotationConfigApplicationContext——从一个或多个Java配置类加载Spring应用上下文
+* AnnotationConfigWebApplicationContext——从一个或多个Java配置类加载Spring Web应用上下文
+* ClassPathXmlApplicationContext——从类路径下的一个或多个XML配置文件加载Spring应用上下文
+* FileSystemXmlApplicationContext——从文件系统下的一个或多个XML配置文件加载Spring应用上下文
+* XmlWebApplicationContext——从一个web应用的的一个或多个XML配置文件加载Spring应用上下文
+
+例子：
+
+```
+ApplicationContext context = new FileSystemXmlApplicationContext("c:/knight.xml");
+ApplicationContext context = new ClassPathXmlApplicationContext("knight.xml");
+ApplicationContext context = new AnnotationConfigApplicationContext(com.springinaction.knights.config.KnightConfig.class);
+```
+
+**Bean的生命周期**
+
+![Bean's life](QQ20160714-1.png)
+
+如上图，bean在可用之前经过几个步骤：
+
+1. Spring实例化bean
+2. Spring向bean的属性注入值和bean引用
+3. 如果bean实现了BeanNameAware，Spring传递bean的ID给setBeanName方法
+4. 如果bean实现了BeanFactoryAware，Spring调用setBeanFactory()方法，传入bean工厂自身
+5. 如果bean实现了ApplicationContextAware，Spring调用setApplicationContext()方法，传入包含bean的应用上下文
+6. 如果bean实现了BeanPostProcessor接口，Spring调用它的postProcessBeforeInitialization()方法
+7. 如果bean实现了InitializingBean接口，Spring调用它的afterPropertiesSet()方法，类似的，如果bean声明了一个init方法，指定的初始化方法会被调用
+8. 如果bean实现了BeanPostProcessor，Spring调用它的postProcessAfterInitialization()方法
+9. 到这里，bean已经可以使用了，且一直留在应用上下文中，直到应用上下文被销毁
+10. 如果bean实现了DisposableBean接口，Spring调用它的destroy()方法，同样的，如果bean声明了一个destroy方法，指定的方法会被调用。
+
+## 1.3 Spring纵览
+
+超越Spring框架本身的，是一个建立在核心框架之上的更大的生态系统，比如web services、REST、mobile和NoSQL领域。
+
+**Spring模块**
+
+![Spring模块](QQ20160714-2.png)
+
+
