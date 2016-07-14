@@ -396,3 +396,9 @@ Spring在AOP模块中提供了对面向切面编程的丰富的支持，提供�
 
 Spring的JDBC和数据访问对象（DAO）模块简化了从数据库获取数据的过程，还有ORM模块，Spring并没有自己实现ORM，而是提供了流行ORM框架如Hibernate、Java Persistence API、Java Data Objects、iBATIS SQL Maps的钩子。Spring的事务管理支持这些ORM框架，包括JDBC。该模块还提供了Java Message Service（JMS）的Spring抽象，用来通过消息异步集成其他应用。该模块利用AOP模块来提供事务管理。
 
+**Web和Remoting**
+
+
+**Instrumentation**
+
+**测试**
