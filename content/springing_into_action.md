@@ -388,4 +388,11 @@ Spring 4.0包含了20个不同的模块：
 
 该模块包括Spring **bean工厂**，提供DI功能，构建在bean工厂之上的Spring**应用上下文**实现，除此之外，还包括邮件、JNDI访问、EJB集成和调度等许多企业级服务。其他所有Spring模块都构建于核心容器之上。
 
-****
+**Spring AOP模块**
+
+Spring在AOP模块中提供了对面向切面编程的丰富的支持，提供了开发自己的切面的基础。
+
+**数据访问和集成**
+
+Spring的JDBC和数据访问对象（DAO）模块简化了从数据库获取数据的过程，还有ORM模块，Spring并没有自己实现ORM，而是提供了流行ORM框架如Hibernate、Java Persistence API、Java Data Objects、iBATIS SQL Maps的钩子。Spring的事务管理支持这些ORM框架，包括JDBC。该模块还提供了Java Message Service（JMS）的Spring抽象，用来通过消息异步集成其他应用。该模块利用AOP模块来提供事务管理。
+
