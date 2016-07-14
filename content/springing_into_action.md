@@ -374,6 +374,6 @@ ApplicationContext context = new AnnotationConfigApplicationContext(com.springin
 
 **Spring模块**
 
-![Spring模块](QQ20160714-2.png)
+
 
 
