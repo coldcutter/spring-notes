@@ -418,6 +418,8 @@ Model-View-Controller（MVC）模式是构建web应用的常用模式，Java从�
 
 **Spring Web Services**
 
+虽然核心Spring框架提供了将Spring beans以声明方式发布为web services，但是这些服务基于一个具有争议性的框架（拙劣的契约置后模型）之上而构建的。这些服务的契约由bean的接口来决定，Spring Web Services提供了契约优先的web services模型，服务的实现都是为了满足服务的契约而编写的。
+
 **Spring Security**
 
 基于Spring AOP，为Spring应用提供声明式权限管理。
