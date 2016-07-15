@@ -372,7 +372,7 @@ ApplicationContext context = new AnnotationConfigApplicationContext(com.springin
 
 超越Spring框架本身的，是一个建立在核心框架之上的更大的生态系统，比如web services、REST、mobile和NoSQL领域。
 
-**Spring模块**
+### 1.3.1 Spring模块
 
 Spring 4.0包含了20个不同的模块：
 
@@ -407,4 +407,46 @@ Model-View-Controller（MVC）模式是构建web应用的常用模式，Java从�
 **测试**
 
 该模块包括一系列对象mock实现，对于集成测试，支持加载一系列beans到应用上下文。
+
+### 1.3.2 Spring作品
+
+有许多Spring项目建立在核心Spring框架上，几乎涵盖了Java开发的方方面面：
+
+**Spring Web Flow**
+
+构建在Spring核心MVC框架之上，为构建基于会话和流的web应用提供支持，指引用户到一个目标（比如向导或购物车）。
+
+**Spring Web Services**
+
+**Spring Security**
+
+基于Spring AOP，为Spring应用提供声明式权限管理。
+
+**Spring Integration**
+
+许多企业级应用需要与其他应用交互，该项目使用Spring的声明式方式提供一些常用集成模式。可参考《Spring Integration in Action》
+
+**Spring Batch**
+
+当想对数据执行批量操作，批处理是最好的方式，使用Spring Batch吧。可参考《Spring Batch in Action》
+
+**Spring Data**
+
+Spring Data简化了各种数据库的访问，包括关系数据库，NoSQL数据库（文档数据库MongoDB，图数据库Neo4j，内存数据库Redis等），Spring Data提供了简化的持久化编程模型，对于许多数据库类型，能自动创建repository实现。
+
+**Spring Social**
+
+Spring Social提供了社交网络集成的支持，如Facebook何Twitter，但不仅仅是social，更多的是connect，它帮助你通过REST APIs连接其他应用（也许并没有社交目的）
+
+**Spring Mobile**
+
+Spring Mobile是对Spring MVC的扩展，支持开发移动web应用。
+
+**Spring for Android**
+
+使用Spring简化开发原生Android应用。
+
+**Spring Boot**
+
+激动人心的项目，通过提供自动配置和starter依赖，可以简化Spring开发，可参考《Spring Boot in Action》。
 
