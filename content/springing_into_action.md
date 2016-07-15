@@ -25,11 +25,11 @@ package com.springinaction.knights;
 public class DamselRescuingKnight implements Knight {
 
   private RescueDamselQuest quest;
-  
+
   public DamselRescuingKnight() {
     this.quest = new RescueDamselQuest();
   }
-  
+
   public void embarkOnQuest() {
     quest.embark();
   }
@@ -48,13 +48,13 @@ DamselRescuingKnight在构造器中自己创建了一个RescueDamselQuest，如�
 package com.springinaction.knights;
 
 public class BraveKnight implements Knight {
-  
+
   private Quest quest;
-  
+
   public BraveKnight(Quest quest) {
     this.quest = quest;
   }
-  
+
   public void embarkOnQuest() {
     quest.embark();
   }
@@ -80,7 +80,7 @@ public class BraveKnightTest {
 }
 ```
 
-Mock测试框架Mockito创建了一个Quest接口的mock实现，注入到BraveKnight实例中，在调用了embarkOnQuest()方法之后，请求Mockito来验证Quest对象的embark()方法被恰好调用了一次。
+Mock测试框架Mockito创建了一个Quest接口的mock实现，注入到BraveKnight实例中，在调用了embarkOnQuest\(\)方法之后，请求Mockito来验证Quest对象的embark\(\)方法被恰好调用了一次。
 
 现在我们要把Quest实现注入到BraveKnight中去了，下面是一个Quest实现：
 
@@ -90,13 +90,13 @@ package com.springinaction.knights;
 import java.io.PrintStream;
 
 public class SlayDragonQuest implements Quest {
-  
+
   private PrintStream stream;
-  
+
   public SlayDragonQuest(PrintStream stream) {
     this.stream = stream;
   }
-  
+
   public void embark() {
     stream.println("Embarking on quest to slay the dragon!");
   }
@@ -111,11 +111,11 @@ public class SlayDragonQuest implements Quest {
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
       http://www.springframework.org/schema/beans/spring-beans.xsd">
-  
+
   <bean id="knight" class="com.springinaction.knights.BraveKnight">
     <constructor-arg ref="quest" />
   </bean>
-  
+
   <bean id="quest" class="com.springinaction.knights.SlayDragonQuest">
     <constructor-arg value="#{T(System).out}" />
   </bean>
@@ -144,7 +144,7 @@ public class KnightConfig {
   public Knight knight() {
     return new BraveKnight(quest());
   }
-  
+
   @Bean
   public Quest quest() {
     return new SlayDragonQuest(System.out);
@@ -191,15 +191,15 @@ import java.io.PrintStream;
 public class Minstrel {
 
   private PrintStream stream;
-  
+
   public Minstrel(PrintStream stream) {
     this.stream = stream;
   }
-  
+
   public void singBeforeQuest() {
     stream.println("Fa la la, the knight is so brave!");
   }
-  
+
   public void singAfterQuest() {
     stream.println("Tee hee hee, the brave knight " +
         "did embark on a quest!");
@@ -216,7 +216,7 @@ public class BraveKnight implements Knight {
 
   private Quest quest;
   private Minstrel minstrel;
-  
+
   public BraveKnight(Quest quest, Minstrel minstrel) {
     this.quest = quest;
     this.minstrel = minstrel;
@@ -241,19 +241,19 @@ public class BraveKnight implements Knight {
       http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
       http://www.springframework.org/schema/beans
       http://www.springframework.org/schema/beans/spring-beans.xsd">
-  
+
   <bean id="knight" class="com.springinaction.knights.BraveKnight">
     <constructor-arg ref="quest" />
   </bean>
-  
+
   <bean id="quest" class="com.springinaction.knights.SlayDragonQuest">
     <constructor-arg value="#{T(System).out}" />
   </bean>
-  
+
   <bean id="minstrel" class="com.springinaction.knights.Minstrel">
     <constructor-arg value="#{T(System).out}" />
   </bean>
-  
+
   <aop:config>
     <aop:aspect ref="minstrel">
       <aop:pointcut id="embark" expression="execution(* *.embarkOnQuest(..))"/>
@@ -333,7 +333,7 @@ public Employee getEmployeeById(long id) {
 
 ## 1.2 容纳你的beans
 
-在Spring应用中，对象在Spring容器中生存，容器是Spring的核心，Spring提供了几种容器实现，分为两大类：*Bean工厂*（由org.springframework.beans.factory.BeanFactory接口定义）是最简单的容器，提供DI的基本支持，*应用上下文*（由org.springframework.context.ApplicationContext接口定义）建立在Bean工厂的概念之上，提供了应用框架服务，如从属性文件解析文本消息和向事件监听器发布应用事件。由于Bean工厂对于大多数应用来说过于底层了，所以更推荐用应用上下文。
+在Spring应用中，对象在Spring容器中生存，容器是Spring的核心，Spring提供了几种容器实现，分为两大类：_Bean工厂_（由org.springframework.beans.factory.BeanFactory接口定义）是最简单的容器，提供DI的基本支持，_应用上下文_（由org.springframework.context.ApplicationContext接口定义）建立在Bean工厂的概念之上，提供了应用框架服务，如从属性文件解析文本消息和向事件监听器发布应用事件。由于Bean工厂对于大多数应用来说过于底层了，所以更推荐用应用上下文。
 
 Spring提供了几种应用上下文：
 
@@ -360,13 +360,13 @@ ApplicationContext context = new AnnotationConfigApplicationContext(com.springin
 1. Spring实例化bean
 2. Spring向bean的属性注入值和bean引用
 3. 如果bean实现了BeanNameAware，Spring传递bean的ID给setBeanName方法
-4. 如果bean实现了BeanFactoryAware，Spring调用setBeanFactory()方法，传入bean工厂自身
-5. 如果bean实现了ApplicationContextAware，Spring调用setApplicationContext()方法，传入包含bean的应用上下文
-6. 如果bean实现了BeanPostProcessor接口，Spring调用它的postProcessBeforeInitialization()方法
-7. 如果bean实现了InitializingBean接口，Spring调用它的afterPropertiesSet()方法，类似的，如果bean声明了一个init方法，指定的初始化方法会被调用
-8. 如果bean实现了BeanPostProcessor，Spring调用它的postProcessAfterInitialization()方法
+4. 如果bean实现了BeanFactoryAware，Spring调用setBeanFactory\(\)方法，传入bean工厂自身
+5. 如果bean实现了ApplicationContextAware，Spring调用setApplicationContext\(\)方法，传入包含bean的应用上下文
+6. 如果bean实现了BeanPostProcessor接口，Spring调用它的postProcessBeforeInitialization\(\)方法
+7. 如果bean实现了InitializingBean接口，Spring调用它的afterPropertiesSet\(\)方法，类似的，如果bean声明了一个init方法，指定的初始化方法会被调用
+8. 如果bean实现了BeanPostProcessor，Spring调用它的postProcessAfterInitialization\(\)方法
 9. 到这里，bean已经可以使用了，且一直留在应用上下文中，直到应用上下文被销毁
-10. 如果bean实现了DisposableBean接口，Spring调用它的destroy()方法，同样的，如果bean声明了一个destroy方法，指定的方法会被调用。
+10. 如果bean实现了DisposableBean接口，Spring调用它的destroy\(\)方法，同样的，如果bean声明了一个destroy方法，指定的方法会被调用。
 
 ## 1.3 Spring纵览
 
@@ -398,7 +398,13 @@ Spring的JDBC和数据访问对象（DAO）模块简化了从数据库获取数�
 
 **Web和Remoting**
 
+Model-View-Controller（MVC）模式是构建web应用的常用模式，Java从不缺MVC框架，如Apache Struts，JSF，WebWork和Tapestry等，该模块包括了Spring自己的MVC框架，也提供了几种与其他应用交互的远程服务，包括Remote Method Invocation（RMI），Hessian，Burlap，JAX-WS以及Spring自己的HTTP调用器，Spring还支持暴露和使用REST APIs。
 
-**Instrumentation**
+**Instrumentation（监测器）**
+
+该模块包括支持向JVM添加代理，比如，它为Tomcat提供织入代理，当类文件被classloader加载后可以修改它们。该模块使用场景很少，我们不讨论它。
 
 **测试**
+
+该模块包括一系列对象mock实现，对于集成测试，支持加载一系列beans到应用上下文。
+
