@@ -452,3 +452,7 @@ Spring Mobile是对Spring MVC的扩展，支持开发移动web应用。
 
 激动人心的项目，通过提供自动配置和starter依赖，可以简化Spring开发，可参考《Spring Boot in Action》。
 
+## 1.4 Spring新特性
+
+略。
+
