@@ -55,9 +55,19 @@ Spring的切面就是标准的Java类，而AspectJ有特定的AOP语言。
 
 ![](/assets/QQ20160904-3.png)
 
+## 4.2 Selecting join points with pointcuts
 
+Spring AOP中，使用AspectJ的切点表达式语言来定义pointcuts
 
+![](/assets/QQ20160904-4.png)
 
+![](/assets/QQ20160904-5.png)
+
+![](/assets/QQ20160904-6.png)
+
+除了4.1中的标识符，Spring添加了bean\(\)标识符，可以在切点表达式中指定具体的bean ID。
+
+## 4.3 Creating annotated aspects
 
 
 
