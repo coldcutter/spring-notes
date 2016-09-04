@@ -5,4 +5,5 @@
 * [1 Springing into action](content/springing_into_action.md)
 * [2 Wiring beans](2-wiring-beans.md)
 * [3 Advanced wiring](3-advanced-wiring.md)
+* [4 Aspect-oriented Spring](4-aspect-oriented-spring.md)
 
