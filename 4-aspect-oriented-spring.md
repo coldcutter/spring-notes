@@ -69,5 +69,44 @@ Spring AOP中，使用AspectJ的切点表达式语言来定义pointcuts
 
 ## 4.3 Creating annotated aspects
 
+给一个POJO类加上注解 @Aspect 就能创建一个切面，给方法加上切点：
+
+```
+@Before("execution(** concert.Performance.perform(..))")
+public void silenceCellPhones() {
+  System.out.println("Silencing cell phones");
+}
+```
+
+![](/assets/QQ20160905-1.png)
+
+在每一个地方都标注上相同的切点表达式就太繁琐了，可以使用 @Pointcut 注解在一个地方定义好：
+
+![](/assets/QQ20160905-2.png)
+
+配置自动代理：
+
+![](/assets/QQ20160905-3.png)
+
+创建around advice:
+
+![](/assets/QQ20160905-4.png)
+
+别忘了调用jd.proceed\(\)来调用被代理的方法！否则会阻塞被代理方法的调用，你也可以多次调用被代理方法，一种理由是实现重试逻辑。
+
+![](/assets/QQ20160905-5.png)
+
+![](/assets/QQ20160905-6.png)
+
+**AOP introductions**
+
+![](/assets/QQ20160905-7.png)
+
+![](/assets/QQ20160905-8.png)
+
+EncoreableIntroducer把 Encoreable 接口引入了 Performance bean。
+
+
+
 
 
