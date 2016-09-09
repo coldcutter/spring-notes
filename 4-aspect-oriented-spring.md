@@ -106,7 +106,19 @@ public void silenceCellPhones() {
 
 EncoreableIntroducer把 Encoreable 接口引入了 Performance bean。
 
+## 4.4 XML配置
 
+略。
+
+## 4.5 注入AspectJ切面
+
+使用AspectJ定义的切面往往需要注入Spring的beans，但是AspectJ的切面是由AspectJ运行时创建的，所以没法被Spring上下文拿到，好在所有的AspectJ切面都提供了一个静态的工厂方法aspectOf\(\)，返回那个切面的单实例，所以可以这样注入：
+
+```
+<bean class="com.springinaction.springidol.CriticAspect" factory-method="aspectOf">
+  <property name="criticismEngine" ref="criticismEngine" />
+</bean>
+```
 
 
 
