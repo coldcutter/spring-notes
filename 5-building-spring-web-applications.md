@@ -57,6 +57,38 @@ public class WebConfig {
 
 ## 5.2 Writing a simple controller
 
+![](/assets/QQ20160910-5.png)
+
+![](/assets/QQ20160910-6.png)
+
+## 5.3 Accepting request input
+
+**查询参数**
+
+@RequestParam\(value = "count", defaultValue = "20"\) int count
+
+查询参数传过来是String类型，因此defaultValue需要是个字符串。
+
+**路径变量**
+
+@RequestMapping\(value = "\/{spittleId}", method = RequestMethod.GET\)
+
+@PathVariable\("spittleId"\) long spittleId 等价于 @PathVariable long spittleId
+
+## 5.4 Processing forms
+
+提交表单后，最好重定向到其他链接，防止刷新导致二次提交
+
+return "redirect:\/spitter\/" + spitter.getUsername\(\);
+
+![](/assets/QQ20160910-7.png)
+
+![](/assets/QQ20160910-8.png)
+
+![](/assets/QQ20160910-9.png)
+
+
+
 
 
 

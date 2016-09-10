@@ -7,4 +7,5 @@
 * [3 Advanced wiring](3-advanced-wiring.md)
 * [4 Aspect-oriented Spring](4-aspect-oriented-spring.md)
 * [5 Building Spring web applications](5-building-spring-web-applications.md)
+* [6 Rendering web views](6-rendering-web-views.md)
 
