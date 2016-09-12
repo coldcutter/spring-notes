@@ -9,4 +9,5 @@
 * [5 Building Spring web applications](5-building-spring-web-applications.md)
 * [6 Rendering web views](6-rendering-web-views.md)
 * [7 Advanced Spring MVC](7-advanced-spring-mvc.md)
+* [16 Creating REST APIs with Spring MVC](16-creating-rest-apis-with-spring-mvc.md)
 
