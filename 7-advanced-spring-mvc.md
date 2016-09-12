@@ -103,3 +103,41 @@ public MultipartResolver multipartResolver() throws IOException {
 
 **注意：如果你使用Part来接收参数，你就不需要配置 StandardServletMultipartResolver bean了，当你使用 MultipartFile 的时候才需要它。**
 
+## 7.3 Handling exceptions
+
+在处理请求的过程中，不管发生什么，结果都是Servlet response，因此，异常必须转换成response，Spring提供了几种异常转换的方式：
+
+* Certain Spring exceptions are automatically mapped to specific HTTP status codes.
+* An exception can be annotated with @ResponseStatus to map it to an HTTP status code.
+* A method can be annotated with @ExceptionHandler to handle the exception.
+
+### 7.3.1 Mapping exceptions to HTTP status codes
+
+![](/assets/QQ20160912-1.png)
+
+上面的异常基本上都是DispatcherServlet或者处理验证的时候抛出的，但是应用抛出的异常，默认会导致 a response with a 500 \(Internal Server Error\) status code，可以使用@ResponseStatus注解来改变：
+
+![](/assets/QQ20160912-2.png)
+
+### 7.3.2 Writing exception-handling methods
+
+如果你想像处理正常请求一样来处理异常，一种方法是在controller方法中捕获它，另一种更好的方法是使用@ExceptionHandler：
+
+```
+@ExceptionHandler(DuplicateSpittleException.class)
+public String handleDuplicateSpittle() {
+  return "error/duplicate";
+}
+```
+
+这样，在同一个Controller中的任何一个处理方法抛出的异常，都会被该方法处理。
+
+## 7.4 Advising controllers
+
+Spring 3.2 提供了 controller advice ，它是被标注了 @ControllerAdvice 并且拥有一个或多个如下方法的类：
+
+* @ExceptionHandler-annotated
+* @InitBinder-annotated
+* @ModelAttribute-annotated
+
+这些方法会被应用在所有控制器的@RequestMapping-annotated的方法中。
