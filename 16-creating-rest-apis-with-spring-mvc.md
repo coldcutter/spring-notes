@@ -102,7 +102,111 @@ The View chosen renders the model—not the resource—to the client.
 
 由于种种限制，不建议使用 ContentNegotiatingViewResolver 。
 
-### 16.2.2 Working with HTTP message converters 
+### 16.2.2 Working with HTTP message converters
+
+Message conversion更加直接，直接把控制器返回的数据转换成资源展示形式，没有model和view。 DispatcherServlet 通过检查 request’s Accept 请求头，使用对应的MessageConverter。
+
+![](/assets/QQ20160915-1.png)
+
+![](/assets/QQ20160915-2.png)
+
+**RETURNING RESOURCE STATE IN THE RESPONSE BODY**
+
+绕过常规的model\/view流程最简单的方法是给控制器方法加上 @ResponseBody 注解。
+
+@RequestMapping\(method=RequestMethod.GET, produces="application\/json"\)
+
+this method will only handle requests whose Accept header includes application\/json。
+
+**RECEIVING RESOURCE STATE IN THE REQUEST BODY**
+
+类似的，@RequestBody注解可以把客户端传过来的资源表示转换成Java对象。
+
+Spring 通过 Content-Type 请求头找到合适的MessageConverter来转换reqeust body
+
+@RequestMapping\( method=RequestMethod.POST, consumes="application\/json"\)
+
+This tells Spring that this method will only handle POST requests to \/spittles if the request’s Content-Type header is application\/json.
+
+**DEFAULTING CONTROLLERS FOR MESSAGE CONVERSION**
+
+Spring 4.0 引入了 @RestController 注解，If you annotate your controller class with @RestController instead of @Controller, Spring applies message conversion to all handler methods in the controller.
+
+## 16.3 Serving more than resources
+
+### 16.3.1 Communicating errors to the client
+
+Spring offers a few options for dealing with such scenarios:
+
+* Status codes can be specified with the @ResponseStatus annotation.
+* Controller methods can return a ResponseEntity that carries more metadata concerning the response.
+* An exception handler can deal with the error cases, leaving the handler methods to focus on the happy path.
+
+**WORKING WITH RESPONSEENTITY**
+
+ResponseEntity is an object that carries metadata \(such as headers and the status code\) about a response in addition to the object to be converted to a resource representation. There’s no need to annotate the method with @ResponseBody if it returns ResponseEntity.
+
+**HANDLING ERRORS**
+
+```
+@ExceptionHandler(SpittleNotFoundException.class)
+public ResponseEntity<Error> spittleNotFound(SpittleNotFoundException e) {
+  long spittleId = e.getSpittleId();
+  Error error = new Error(4, "Spittle [" + spittleId + "] not found");
+  return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+}
+```
+
+```
+public class SpittleNotFoundException extends RuntimeException {
+  private long spittleId;
+  public SpittleNotFoundException(long spittleId) {
+    this.spittleId = spittleId;
+  }
+
+  public long getSpittleId() {
+    return spittleId;
+  }
+}
+```
+
+You can clean things up a little more, though. Now that you know that spittleById\(\) will return a Spittle and that the HTTP status will always be 200 \(OK\), you no longer need to use ResponseEntity and can replace it with @ResponseBody:
+
+```
+@RequestMapping(value="/{id}", method=RequestMethod.GET)
+public @ResponseBody Spittle spittleById(@PathVariable long id) {
+  Spittle spittle = spittleRepository.findOne(id);
+  if (spittle == null) {
+    throw new SpittleNotFoundException(id);
+  }
+  return spittle;
+}
+```
+
+Knowing that the error handler method always returns an Error and always responds with an HTTP status code of 404 \(Not Found\), you can apply a similar cleanup process to spittleNotFound\(\):
+
+```
+@ExceptionHandler(SpittleNotFoundException.class)
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public @ResponseBody Error spittleNotFound(SpittleNotFoundException e) {
+  long spittleId = e.getSpittleId();
+  return new Error(4, "Spittle [" + spittleId + "] not found");
+}
+```
+
+### 16.3.2 Setting headers in the response
+
+When creating a new resource, it’s considered good form to communicate the resource’s URL to the client in the Location header of the response.
+
+![](/assets/QQ20160915-3.png)
+
+Rather than construct the URI manually, Spring offers some help in the form of UriComponentsBuilder.
+
+![](/assets/QQ20160915-4.png)
+
+## 16.4 Consuming REST resources
+
+略。
 
 
 
