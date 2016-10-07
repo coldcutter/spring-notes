@@ -71,5 +71,63 @@ SockJS deals in URLs with the http:\/\/ or https:\/\/ scheme instead of ws:\/\/ 
 
 ## 18.3 Working with STOMP messaging
 
+Working directly with WebSocket \(or SockJS\) is a lot like developing a web application using only TCP sockets. Fortunately, you don’t have to work with raw WebSocket connections. Just as HTTP layers a request-response model on top of TCP sockets, STOMP layers a frame-based wire format to define messaging semantics on top of WebSocket.
+
+STOMP（Simple Text Oriented Messaging Protocol）消息帧由一个命令，一个或多个头，以及一个消息体组成：
+
+```
+SEND
+destination:/app/marco
+content-length:20
+
+{\"message\":\"Marco!\"}
+```
+
+Spring provides for STOMP-based messaging with a programming model based on Spring MVC. As you’ll see, handling STOMP messages in a Spring MVC controller isn’t much different from handling HTTP requests.
+
+### 18.3.1 Enabling STOMP messaging
+
+![](/assets/QQ20161007-6@2x.png)
+
+registerStompEndpoints\(\) 注册了 \/marcopolo 作为 STOMP endpoint. It’s the endpoint that a client would connect to before subscribing to or publishing to a destination path.
+
+configureMessageBroker\(\) 配置 message broker，该方法可选，如果不覆盖，会有一个简单内存消息代理用来处理\/topic打头的消息。
+
+![](/assets/QQ20161007-7@2x.png)
+
+当消息到来的时候，the destination prefix 决定了消息如何被处理，\/app打头的会被 @MessageMapping 注解的控制器方法处理，请求broker的消息，包括 @MessageMapping 方法返回值产生的消息，会被路由到消息代理，最终发送给订阅那些 destinations 的客户端。
+
+**ENABLING A STOMP BROKER RELAY**
+
+简单消息代理有限制，只支持STOMP命令的子集，由于它基于内存，因此不适合集群消息处理。对于生产环境，需要使用真正的消息代理，如 RabbitMQ 或 ActiveMQ ，当建立完消息代理之后，修改 configureMessageBroker 方法
+
+```
+@Override
+public void configureMessageBroker(MessageBrokerRegistry registry) {
+  registry.enableStompBrokerRelay("/topic", "/queue");
+  registry.setApplicationDestinationPrefixes("/app");
+}
+```
+
+Depending on which STOMP broker you choose, you may be limited in your choices for the destination prefix. RabbitMQ, for instance, only allows destinations of type \/temp-queue, \/exchange, \/topic, \/queue, \/amq\/queue, and \/reply-queue\/.
+
+![](/assets/QQ20161007-8@2x.png)
+
+By default, the STOMP broker relay assumes that the broker is listening on port 61613 of localhost and that the client username and password are both “guest”，你可以配置：
+
+```
+@Override
+public void configureMessageBroker(MessageBrokerRegistry registry) {
+  registry.enableStompBrokerRelay("/topic", "/queue")
+          .setRelayHost("rabbit.someotherserver")
+          .setRelayPort(62623)
+          .setClientLogin("marcopolo")
+          .setClientPasscode("letmein01");
+  registry.setApplicationDestinationPrefixes("/app", "/foo");
+}
+```
+
+### 18.3.2 Handling STOMP messages from the client 
+
 
 
