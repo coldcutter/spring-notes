@@ -205,6 +205,46 @@ The Handlebars template is defined in a separate &lt;script&gt; tag as follows:
 
 ## 18.4 Working with user-targeted messages
 
+There are three ways to take advantage of an authenticated user when messaging with Spring and STOMP:
+
+* The@MessageMappingand@SubscribeMappingmethodscanreceiveaPrincipal for the authenticated user.
+* Valuesreturnedfromthe@MessageMapping,@SubscribeMapping,and@MessageException methods can be sent as messages to the authenticated user.
+* The SimpMessagingTemplate can send messages to a specific user.
+
+### 18.4.1 Working with user messages in a controller
+
+```
+@MessageMapping("/spittle")
+@SendToUser("/queue/notifications")
+public Notification handleSpittle(Principal principal, SpittleForm form) {
+  Spittle spittle = new Spittle(principal.getName(), form.getText(), new Date());
+  spittleRepo.save(spittle);
+  return new Notification("Saved Spittle");
+}
+```
+
+Consider this line of JavaScript that subscribes to a user-specific destination:
+
+```
+stomp.subscribe("/user/queue/notifications", handleNotifications);
+```
+
+Notice that the destination is prefixed with \/user. Internally, destinations that are prefixed with \/user are handled in a special way.
+
+![](/assets/QQ20161007-14@2x.png)
+
+UserDestinationMessageHandler’s primary job is to reroute user messages to a destination that’s unique to the user. In the case of a subscription, it derives the target destination by removing the \/user prefix and adding a suffix that’s based on the user’s session. For instance, a subscription to \/user\/queue\/notifications may end up being rerouted to a destination named \/queue\/notifications-user6hr83v6t. 
+
+### 18.4.2 Sending messages to a specific user
+
+![](/assets/QQ20161007-15@2x.png)
+
+## 18.5 Handling message exceptions 
+
+![](/assets/QQ20161007-16@2x.png)
+
+
+
 
 
 
