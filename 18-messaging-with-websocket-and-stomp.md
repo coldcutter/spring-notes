@@ -127,7 +127,38 @@ public void configureMessageBroker(MessageBrokerRegistry registry) {
 }
 ```
 
-### 18.3.2 Handling STOMP messages from the client 
+### 18.3.2 Handling STOMP messages from the client
+
+![](/assets/QQ20161007-9@2x.png)
+
+Because handleShout\(\) accepts a Shout parameter, the payload of the STOMP message will be converted into a Shout using one of Spring’s message converters.
+
+![](/assets/QQ20161007-10@2x.png)
+
+**PROCESSING SUBSCRIPTIONS**
+
+Any method that’s annotated with @SubscribeMapping will be invoked, much like @MessagingMapping methods, when a STOMP subscription message arrives.
+
+The primary use case for @SubscribeMapping is to implement a request-reply pattern. In the request-reply pattern, the client subscribes to a destination expecting a one-time response at that destination.
+
+```
+@SubscribeMapping({"/marco"})
+public Shout handleSubscription() {
+  Shout outgoing = new Shout();
+  outgoing.setMessage("Polo!");
+  return outgoing;
+}
+```
+
+The Shout object is then converted into a message and sent back to the client at the same destination to which the client subscribed.
+
+订阅与HTTP GET的区别，GET是同步请求，而订阅是异步的。
+
+**WRITING THE JAVASCRIPT CLIENT**
+
+![](/assets/QQ20161007-11@2x.png)
+
+
 
 
 
