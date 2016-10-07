@@ -158,6 +158,53 @@ The Shout object is then converted into a message and sent back to the client at
 
 ![](/assets/QQ20161007-11@2x.png)
 
+### 18.3.3 Sending messages to the client
+
+**SENDING A MESSAGE AFTER HANDLING A MESSAGE**
+
+```
+@MessageMapping("/marco")
+public Shout handleShout(Shout incoming) {
+  logger.info("Received message: " + incoming.getMessage());
+  Shout outgoing = new Shout();
+  outgoing.setMessage("Polo!");
+  return outgoing;
+}
+```
+
+When an @MessageMapping-annotated method has a return value, the returned object will be converted \(via a message converter\) and placed into the payload of a STOMP frame and published to the broker.
+
+By default, the frame will be published to the same destination that triggered the handler method, but with \/topic as the prefix, But you can override the destination by annotating the method with @SendTo:
+
+```
+@MessageMapping("/marco")
+@SendTo("/topic/shout")
+```
+
+In a similar way, an @SubscribeMapping-annotated method can send a message in reply to a subscription. What’s different with @SubscribeMapping is that the Shout message is sent directly to the client without going through the broker. If you annotate the method with @SendTo, the message will be sent to the destination specified, going through the broker.
+
+**SENDING A MESSAGE FROM ANYWHERE**
+
+![](/assets/QQ20161007-12@2x.png)
+
+The Handlebars template is defined in a separate &lt;script&gt; tag as follows:
+
+```
+<script id="spittle-template" type="text/x-handlebars-template">
+  <li id="preexist">
+    <div class="spittleMessage">{{message}}</div>
+    <div>
+      <span class="spittleTime">{{time}}</span>
+      <span class="spittleLocation">({{latitude}}, {{longitude}})</span>
+    </div>
+  </li>
+</script>
+```
+
+![](/assets/QQ20161007-13@2x.png)
+
+## 18.4 Working with user-targeted messages
+
 
 
 
